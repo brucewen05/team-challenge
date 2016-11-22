@@ -26,8 +26,16 @@ class SignUpForm extends React.Component {
   //callback for the reset button
   handleReset(event) {
     console.log('Reset!');
-    var emptyState = {};
-    this.setState(emptyState);
+    //var emptyState = {};
+    var defaultState = {
+      email:{value:'',valid:false}, 
+      name:{value:'',valid:false},
+      dob:{value:'',valid:false},
+      password:{value:'',valid:false},
+      passwordConf:{value:'',valid:false}
+    };
+
+    this.setState(defaultState);
   }
 
   //callback for the submit button
@@ -267,7 +275,8 @@ class PasswordConfirmationInput extends React.Component {
 
     //what to assign to parent's state
     var stateUpdate = {
-      'passConf': {
+      // the state name is called passwordConf!!!
+      'passwordConf': {
         value:event.target.value,
         valid:isValid
       }
