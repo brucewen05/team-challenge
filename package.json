@@ -5,7 +5,8 @@
   "devDependencies": {
     "enzyme": "^2.6.0",
     "react-addons-test-utils": "^15.4.0",
-    "react-scripts": "0.7.0"
+    "react-scripts": "0.7.0",
+    "sinon": "^1.17.6"
   },
   "dependencies": {
     "bootstrap": "^3.3.7",
