@@ -12,10 +12,12 @@ class SignUpForm extends React.Component {
       name:{value:'',valid:false},
       dob:{value:'',valid:false},
       password:{value:'',valid:false},
-      passwordConf:{value:'',valid:false}
+      passwordConf:{value:'',valid:false},
+      submitted:false
     };
 
     this.updateState = this.updateState.bind(this); //bind for scope
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   //callback for updating the state with child information
@@ -32,7 +34,8 @@ class SignUpForm extends React.Component {
       name:{value:'',valid:false},
       dob:{value:'',valid:false},
       password:{value:'',valid:false},
-      passwordConf:{value:'',valid:false}
+      passwordConf:{value:'',valid:false},
+      submitted:false
     };
 
     this.setState(defaultState);
@@ -42,7 +45,8 @@ class SignUpForm extends React.Component {
   handleSubmit(event) {
     event.preventDefault();
     console.log('Submitted!');
-    this.props.submitCallback(this.state);
+    //this.props.submitCallback(this.state);
+    this.setState({submitted:true});
   }
 
   render() {
@@ -50,35 +54,40 @@ class SignUpForm extends React.Component {
     var buttonEnabled = (this.state.email.valid && this.state.name.valid && this.state.dob.isValid && this.state.password.valid);
 
     return (
-      <form name="signupForm" onSubmit={(e) => this.handleSubmit(e)}>
+      <div>
+        {this.state.submitted &&
+          <div className="alert alert-success" role="alert"><p>Thanks for signing up!</p></div>
+        }
+        <form name="signupForm" onSubmit={(e) => this.handleSubmit(e)}>
 
-        <EmailInput value={this.state.email.value} updateParent={this.updateState} />
+          <EmailInput value={this.state.email.value} updateParent={this.updateState} />
 
-        <RequiredInput 
-          id="name" field="name" type="text"
-          label="Name" placeholder="your name"
-          errorMessage="we need to know your name"
-          value={this.state.name.value} 
-          updateParent={this.updateState} />
+          <RequiredInput 
+            id="name" field="name" type="text"
+            label="Name" placeholder="your name"
+            errorMessage="we need to know your name"
+            value={this.state.name.value} 
+            updateParent={this.updateState} />
 
-        <BirthdayInput value={this.state.dob.value} updateParent={this.updateState}/>
+          <BirthdayInput value={this.state.dob.value} updateParent={this.updateState}/>
 
-        <RequiredInput 
-          id="password" field="password" type="password"
-          label="Password" placeholder=""
-          errorMessage="your password can't be blank"
-          value={this.state.password.value} 
-          updateParent={this.updateState} />
+          <RequiredInput 
+            id="password" field="password" type="password"
+            label="Password" placeholder=""
+            errorMessage="your password can't be blank"
+            value={this.state.password.value} 
+            updateParent={this.updateState} />
 
-        <PasswordConfirmationInput value={this.state.passwordConf.value} password={this.state.password.value} updateParent={this.updateState}/>
+          <PasswordConfirmationInput value={this.state.passwordConf.value} password={this.state.password.value} updateParent={this.updateState}/>
 
-        {/* Submit Buttons */}
-        <div className="form-group">
-          <button id="resetButton" type="reset" className="btn btn-default" onClick={(e)=>this.handleReset(e)}>Reset</button> {' ' /*space*/}
-          <button id="submitButton" type="submit" className="btn btn-primary" disabled={buttonEnabled}>Sign Me Up!</button>
-        </div>
+          {/* Submit Buttons */}
+          <div className="form-group">
+            <button id="resetButton" type="reset" className="btn btn-default" onClick={(e)=>this.handleReset(e)}>Reset</button> {' ' /*space*/}
+            <button id="submitButton" type="submit" className="btn btn-primary" disabled={buttonEnabled} onClick={this.handleSubmit}>Sign Me Up!</button>
+          </div>
 
-      </form>
+        </form>
+      </div>
     );
   }
 }

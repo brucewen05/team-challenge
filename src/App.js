@@ -3,6 +3,7 @@ import SignUpForm from './TeamSignUp.js';
 import 'bootstrap/dist/css/bootstrap.css';
 
 class App extends Component {
+
   render() {
     return (
       <div className="container">
@@ -12,7 +13,7 @@ class App extends Component {
           <hr />
         </header>      
         <div className="row">
-          <SignUpForm />
+          <SignUpForm submitCallback={this.submit}/>
         </div>
       </div>
     );
