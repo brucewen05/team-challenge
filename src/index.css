@@ -11,3 +11,7 @@ body {
 .invalid input {
     background-color: #f2dede;
 }
+
+.subtitle {
+    font-size: 2rem;
+}
