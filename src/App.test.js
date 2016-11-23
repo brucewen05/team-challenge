@@ -60,6 +60,8 @@ describe('behavior of the form reset button', () => {
     expect(wrapper.state(['passwordConf']).value).toEqual('');
     expect(wrapper.state(['passwordConf']).valid).toBeFalsy();
 
+    // the submit button should be disabled
+    // need to check how to test this!!!
   });
 
   it('should set email, name, birthdate, password, and confirm password fields to be empty', () => {
@@ -76,5 +78,11 @@ describe('behavior of the form reset button', () => {
     expect(wrapper.find('#password input').text()).toEqual('');
     expect(wrapper.find('PasswordConfirmationInput input').text()).toEqual('');
 
+    // we should have 5 div's with className invalid after we reset all the fields
+    expect(wrapper.find('.invalid').reduce((sum, cur)=>{return sum + 1},0)).toEqual(5);
   });
+});
+
+describe('behavior of the form submit button', () => {
+
 });
