@@ -271,8 +271,8 @@ class BirthdayInput extends React.Component {
  */
 class PasswordConfirmationInput extends React.Component {
   validate(currentValue){
-    if(currentValue === '' || this.props.password === ''){ //check both entries
-      return {mismatched:true, isValid:false};
+    if (this.props.password === '') {
+      return {isValid:true};
     }
 
     if (currentValue === this.props.password) {

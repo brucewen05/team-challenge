@@ -10,11 +10,11 @@ import SignUpForm, {EmailInput, RequiredInput, BirthdayInput, PasswordConfirmati
 //   ReactDOM.render(<App />, div);
 // });
 describe('behavior of password confirmation field', () => {
-  it('should have invalid state on start', () => {
-    var wrapper = shallow(<PasswordConfirmationInput value=''/>);
+  it('should have valid state if original password is empty', () => {
+    var wrapper = shallow(<PasswordConfirmationInput password=''/>);
 
-    expect(wrapper.is('.invalid')).toBeTruthy();
-    expect(wrapper.find('.error-mismatched').length).toEqual(1);
+    expect(wrapper.is('.invalid')).toBeFalsy();
+    expect(wrapper.find('.error-mismatched').length).toEqual(0);
   });
 
   it('should have invalid state on passwords mismatch', () => {
@@ -146,8 +146,10 @@ describe('behavior of the form reset button', () => {
     expect(wrapper.find('#password input').text()).toEqual('');
     expect(wrapper.find('PasswordConfirmationInput input').text()).toEqual('');
 
-    // we should have 5 div's with className invalid after we reset all the fields
-    expect(wrapper.find('.invalid').reduce((sum, cur)=>{return sum + 1},0)).toEqual(5);
+    // we should have 4 div's with className
+    // invalid (except the one for password confirmation) 
+    // after we reset all the fields
+    expect(wrapper.find('.invalid').reduce((sum, cur)=>{return sum + 1},0)).toEqual(4);
   });
 });
 
