@@ -10,6 +10,42 @@ import SignUpForm, {EmailInput, RequiredInput, BirthdayInput, PasswordConfirmati
 //   ReactDOM.render(<App />, div);
 // });
 
+describe('functionality of <RequiredInput />', () => {
+  it('should have invalid state on start', () => {
+    var wrapper = shallow(<RequiredInput value=''/>);
+
+    expect(wrapper.is('.invalid')).toBeTruthy();
+  });
+
+  it('should not have invalid state on non-empty input', ()=>{
+    var wrapper = shallow(<RequiredInput value='a'/>);
+
+    expect(wrapper.is('.invalid')).toBeFalsy();
+  });
+
+  it('should update name field on input change', () => {
+    var handleChangeSpy = sinon.spy();
+    var wrapper = shallow(<RequiredInput field='name' updateParent={handleChangeSpy}/>);
+    wrapper.find('input').simulate('change', {target: {value: "a"}});
+    
+    expect(handleChangeSpy.getCall(0).args[0]).toEqual({name: {value:'a',valid:true}});
+    expect(handleChangeSpy.called).toBeTruthy();
+    expect(wrapper.is('.invalid')).toBeFalsy();
+    expect(wrapper.find('.error-missing').length).toEqual(0);
+  });
+
+  it('should update password field on input change', () => {
+    var handleChangeSpy = sinon.spy();
+    var wrapper = shallow(<RequiredInput field='password' updateParent={handleChangeSpy}/>);
+    wrapper.find('input').simulate('change', {target: {value: "a"}});
+    
+    expect(handleChangeSpy.getCall(0).args[0]).toEqual({password: {value:'a',valid:true}});
+    expect(handleChangeSpy.called).toBeTruthy();
+    expect(wrapper.is('.invalid')).toBeFalsy();
+    expect(wrapper.find('.error-missing').length).toEqual(0);
+  });
+});
+
 describe('behavior of the form reset button', () => {
   let wrapper;
   let handleResetSpy;
