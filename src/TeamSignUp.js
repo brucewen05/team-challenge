@@ -273,9 +273,13 @@ class PasswordConfirmationInput extends React.Component {
   validate(currentValue){
     if(currentValue === '' || this.props.password === ''){ //check both entries
       return {mismatched:true, isValid:false};
-    }    
+    }
 
-    return {isValid: true}; //no errors
+    if (currentValue === this.props.password) {
+      return {isValid:true};
+    } else {
+      return {mismatched:true, isValid:false}
+    }
   }  
   
   handleChange(event){  

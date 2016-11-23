@@ -9,12 +9,44 @@ import SignUpForm, {EmailInput, RequiredInput, BirthdayInput, PasswordConfirmati
 //   const div = document.createElement('div');
 //   ReactDOM.render(<App />, div);
 // });
+describe('behavior of password confirmation field', () => {
+  it('should have invalid state on start', () => {
+    var wrapper = shallow(<PasswordConfirmationInput value=''/>);
+
+    expect(wrapper.is('.invalid')).toBeTruthy();
+    expect(wrapper.find('.error-mismatched').length).toEqual(1);
+  });
+
+  it('should have invalid state on passwords mismatch', () => {
+    var validateSpy = sinon.spy(PasswordConfirmationInput.prototype, 'validate');
+    var callBackSpy = sinon.spy();
+    var wrapper = shallow(<PasswordConfirmationInput password='123456' updateParent={callBackSpy}/>);
+
+    // simulate inputing a password that does not match the original one
+    wrapper.find('input').simulate('change', {target: {value: "123"}});
+
+    expect(validateSpy.getCall(1).args[0]).toEqual('123');
+    expect(callBackSpy.getCall(0).args[0]).toEqual({'passwordConf': {value: '123', valid: false}});
+
+    expect(wrapper.is('.invalid')).toBeTruthy();
+    expect(wrapper.find('.error-mismatched').length).toEqual(1);
+  });
+
+    it('should not show error when passwords match', () => {
+    var wrapper = shallow(<PasswordConfirmationInput password='123456' value='123456'/>);
+    
+    expect(wrapper.is('.invalid')).toBeFalsy();
+    expect(wrapper.find('.error-mismatched').length).toEqual(0);
+  });
+
+});
 
 describe('functionality of <RequiredInput />', () => {
   it('should have invalid state on start', () => {
     var wrapper = shallow(<RequiredInput value=''/>);
 
     expect(wrapper.is('.invalid')).toBeTruthy();
+    expect(wrapper.find('.error-missing').length).toEqual(1);
   });
 
   it('should not have invalid state on non-empty input', ()=>{
