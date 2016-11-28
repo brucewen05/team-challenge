@@ -86,7 +86,7 @@ describe('behavior of email input', () =>{
     expect(wrapper.is('.invalid')).toBeFalsy();
   });
   // if the input is inalid, there will be an error message
-  it('should show error message in the dom when input is not valid', () => {
+  it('should show error message in the dom when input is not valid, update input', () => {
     var validateSpy = sinon.spy(EmailInput.prototype, 'validate');
     var dummySpy = sinon.spy();
 
@@ -97,12 +97,16 @@ describe('behavior of email input', () =>{
     // simulate a change to the email input
     wrapper.find('input').simulate('change', {target: {value: "bbb"}});
     // still invalid
-    expect(wrapper.is('.invalid')).toBeTruthy();
-    expect(wrapper.find('.error-invalid')).toBeTruthy();
+     expect(wrapper.is('.invalid')).toBeTruthy();
+     expect(wrapper.find('.error-invalid')).toBeTruthy();
     // actually updated
-    expect(validateSpy.getCall(1).args[0]).toEqual('bbb');
-    expect(dummySpy.getCall(0).args[0]).toEqual({'email': {value: 'bbb',valid: false}});
+     expect(validateSpy.getCall(1).args[0]).toEqual('bbb');
+     expect(dummySpy.getCall(0).args[0]).toEqual({'email': {value: 'bbb',valid: false}});
   });
+  it('should show error message when input is empty') {
+    var wrapper = shallow(<EmailInput value="a@uw.edu"/>)
+    expect(wrapper.is('.missing')).toBeFalsy();
+  }
 });
 
 describe('behavior of the form reset button', () => {
