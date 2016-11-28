@@ -79,9 +79,7 @@ describe('functionality of <RequiredInput />', () => {
 });
 
 describe('behavior of email input', () =>{
-  it('should show error message when input is not valid', () => {
-    //var wrapper = shallow(<EmailInput value='aa'/>);
-    // show that the email form will be valid if a valid email is input
+  it('should not show error message when input is valid', () => {
     var wrapper = shallow(<EmailInput value="a@uw.edu"/>)
     expect(wrapper.is('.invalid')).toBeFalsy();
   });
@@ -112,6 +110,7 @@ describe('behavior of email input', () =>{
 describe('behavior of the form reset button', () => {
   let wrapper;
   let handleResetSpy;
+  let submitCallback;
 
   beforeAll(() => {
     //create a spy on the handleReset() method so that we can verify later it has been called
@@ -120,7 +119,8 @@ describe('behavior of the form reset button', () => {
 
   // set up stage
   beforeEach(() => {
-    wrapper = mount(<SignUpForm />);
+    submitCallback = sinon.spy();
+    wrapper = mount(<SignUpForm submitCallback={submitCallback} />);
     // input some dummy but valid data into each field
     wrapper.find('EmailInput input').simulate('change', { target: { value: "a@gmail.com" } });
     wrapper.find('#name input').simulate('change', { target: { value: "name" } });
@@ -159,8 +159,12 @@ describe('behavior of the form reset button', () => {
     expect(wrapper.state(['passwordConf']).value).toEqual('');
     expect(wrapper.state(['passwordConf']).valid).toBeFalsy();
 
+    expect(submitCallback.getCall(0).args[0]).toBeFalsy();
+
     // the submit button should be disabled
-    // need to check how to test this!!!
+    // and should call the submitCallback with a false parameter
+    expect(wrapper.find('#submitButton').prop('disabled')).toBeTruthy();
+    expect(submitCallback.getCall(0).args[0]).toBeFalsy();
   });
 
   it('should set email, name, birthdate, password, and confirm password fields to be empty', () => {
@@ -181,6 +185,13 @@ describe('behavior of the form reset button', () => {
     // invalid (except the one for password confirmation)
     // after we reset all the fields
     expect(wrapper.find('.invalid').reduce((sum, cur) => { return sum + 1 }, 0)).toEqual(4);
+
+    expect(submitCallback.getCall(0).args[0]).toBeFalsy();
+
+    // the submit button should be disabled
+    // and should call the submitCallback with a false parameter
+    expect(wrapper.find('#submitButton').prop('disabled')).toBeTruthy();
+    expect(submitCallback.getCall(0).args[0]).toBeFalsy();
   });
 });
 
@@ -220,16 +231,108 @@ describe('behavior of the birthdate field', () => {
   });
 
   it('should execute updateParent callback on input change', () => {
+    var validateSpy = sinon.spy(BirthdayInput.prototype, 'validate');
     var handleChangeSpy = sinon.spy();
     var wrapper = shallow(<BirthdayInput updateParent={handleChangeSpy} />);
+    
     wrapper.find('input').simulate('change', { target: { value: "January 30, 1996" } });
+   
     //callback is called
     expect(handleChangeSpy.called).toBeTruthy();
     expect(handleChangeSpy.getCall(0).args[0]).toEqual({ dob: { value: 'January 30, 1996', valid: true } });
-  });
+    expect(validateSpy.getCall(1).args[0]).toEqual('January 30, 1996');
+});
 
 });
 
 describe('behavior of the form submit button', () => {
+  it('should be disabled on start', () => {
+    var submitCallback = sinon.spy();
+    var wrapper = mount(<SignUpForm submitCallback={submitCallback} />);
+
+    expect(wrapper.find('#submitButton').prop('disabled')).toBeTruthy();
+  });
+
+  it('should be disabled on invalid email', () => {
+    var submitCallback = sinon.spy();
+    var wrapper = mount(<SignUpForm submitCallback={submitCallback} />);
+
+    // only email is invalid
+    wrapper.find('EmailInput input').simulate('change', { target: { value: "aaa" } });
+    wrapper.find('#name input').simulate('change', { target: { value: "name" } });
+    wrapper.find('BirthdayInput input').simulate('change', { target: { value: "03/25/1994" } });
+    wrapper.find('#password input').simulate('change', { target: { value: "123456" } });
+    wrapper.find('PasswordConfirmationInput input').simulate('change', { target: { value: "123456" } });
+    
+    expect(wrapper.find('#submitButton').prop('disabled')).toBeTruthy();
+  });
+
+  it('should be disabled on empty name', () => {
+    var submitCallback = sinon.spy();
+    var wrapper = mount(<SignUpForm submitCallback={submitCallback} />);
+
+    // name is empty(no input)
+    wrapper.find('EmailInput input').simulate('change', { target: { value: "a@gmail.com" } });
+    wrapper.find('BirthdayInput input').simulate('change', { target: { value: "03/25/1994" } });
+    wrapper.find('#password input').simulate('change', { target: { value: "123456" } });
+    wrapper.find('PasswordConfirmationInput input').simulate('change', { target: { value: "123456" } });
+    
+    expect(wrapper.find('#submitButton').prop('disabled')).toBeTruthy();
+  });
+
+  it('should be disabled on invalid birthdate', () => {
+    var submitCallback = sinon.spy();
+    var wrapper = mount(<SignUpForm submitCallback={submitCallback} />);
+
+    // birthdate is less than 13 years ago
+    wrapper.find('EmailInput input').simulate('change', { target: { value: "a@gmail.com" } });
+    wrapper.find('#name input').simulate('change', { target: { value: "name" } });
+    wrapper.find('BirthdayInput input').simulate('change', { target: { value: "03/25/2008" } });
+    wrapper.find('#password input').simulate('change', { target: { value: "123456" } });
+    wrapper.find('PasswordConfirmationInput input').simulate('change', { target: { value: "123456" } });
+    
+    expect(wrapper.find('#submitButton').prop('disabled')).toBeTruthy();
+  });
+
+  it('should be disabled on empty password', () => {
+    var submitCallback = sinon.spy();
+    var wrapper = mount(<SignUpForm submitCallback={submitCallback} />);
+
+    // only password is empty
+    wrapper.find('EmailInput input').simulate('change', { target: { value: "a@gmail.com" } });
+    wrapper.find('#name input').simulate('change', { target: { value: "name" } });
+    wrapper.find('BirthdayInput input').simulate('change', { target: { value: "03/25/2008" } });
+    wrapper.find('PasswordConfirmationInput input').simulate('change', { target: { value: "123456" } });
+    
+    expect(wrapper.find('#submitButton').prop('disabled')).toBeTruthy();
+  });
+
+  it('should be disabled on passwords mismatch', () => {
+    var submitCallback = sinon.spy();
+    var wrapper = mount(<SignUpForm submitCallback={submitCallback} />);
+
+    // two passwords do not match
+    wrapper.find('EmailInput input').simulate('change', { target: { value: "a@gmail.com" } });
+    wrapper.find('#name input').simulate('change', { target: { value: "name" } });
+    wrapper.find('BirthdayInput input').simulate('change', { target: { value: "03/25/2008" } });
+    wrapper.find('#password input').simulate('change', { target: { value: "123" } });
+    wrapper.find('PasswordConfirmationInput input').simulate('change', { target: { value: "123456" } });
+    
+    expect(wrapper.find('#submitButton').prop('disabled')).toBeTruthy();
+  });
+
+  it('should be enabled on valid inputs', () => {
+    var submitCallback = sinon.spy();
+    var wrapper = mount(<SignUpForm submitCallback={submitCallback} />);
+
+    // all inputs are valid
+    wrapper.find('EmailInput input').simulate('change', { target: { value: "a@gmail.com" } });
+    wrapper.find('#name input').simulate('change', { target: { value: "name" } });
+    wrapper.find('BirthdayInput input').simulate('change', { target: { value: "03/25/1990" } });
+    wrapper.find('#password input').simulate('change', { target: { value: "123456" } });
+    wrapper.find('PasswordConfirmationInput input').simulate('change', { target: { value: "123456" } });
+
+    expect(wrapper.find('#submitButton').prop('disabled')).toBeFalsy();    
+  });
 
 });
