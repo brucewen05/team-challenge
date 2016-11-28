@@ -43,7 +43,6 @@ class SignUpForm extends React.Component {
   //callback for the submit button
   handleSubmit(event) {
     event.preventDefault();
-    console.log('Submitted!', this.state.email.valid && this.state.name.valid && this.state.dob.valid && this.state.password.valid && this.state.passwordConf.valid);
     this.props.submitCallback(this.state.email.valid && this.state.name.valid && this.state.dob.valid && this.state.password.valid && this.state.passwordConf.valid);
   }
 
