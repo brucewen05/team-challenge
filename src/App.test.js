@@ -10,13 +10,14 @@ import SignUpForm, { EmailInput, RequiredInput, BirthdayInput, PasswordConfirmat
 //   ReactDOM.render(<App />, div);
 // });
 describe('behavior of password confirmation field', () => {
+  // valid if password is empty
   it('should have valid state if original password is empty', () => {
     var wrapper = shallow(<PasswordConfirmationInput password='' />);
-
+    // not invalid, no mismatch error
     expect(wrapper.is('.invalid')).toBeFalsy();
     expect(wrapper.find('.error-mismatched').length).toEqual(0);
   });
-
+  // invalid when mismatched
   it('should have invalid state on passwords mismatch', () => {
     var validateSpy = sinon.spy(PasswordConfirmationInput.prototype, 'validate');
     var callBackSpy = sinon.spy();
@@ -24,17 +25,17 @@ describe('behavior of password confirmation field', () => {
 
     // simulate inputing a password that does not match the original one
     wrapper.find('input').simulate('change', { target: { value: "123" } });
-
+    // make the passwords not match
     expect(validateSpy.getCall(1).args[0]).toEqual('123');
     expect(callBackSpy.getCall(0).args[0]).toEqual({ 'passwordConf': { value: '123', valid: false } });
-
+    // is invalid, are missmatched
     expect(wrapper.is('.invalid')).toBeTruthy();
     expect(wrapper.find('.error-mismatched').length).toEqual(1);
   });
-
+  // when the passwords match
   it('should not show error when passwords match', () => {
     var wrapper = shallow(<PasswordConfirmationInput password='123456' value='123456' />);
-
+    // not invalid, no error message
     expect(wrapper.is('.invalid')).toBeFalsy();
     expect(wrapper.find('.error-mismatched').length).toEqual(0);
   });
@@ -42,35 +43,36 @@ describe('behavior of password confirmation field', () => {
 });
 
 describe('functionality of <RequiredInput />', () => {
+  // at start
   it('should have invalid state on start', () => {
     var wrapper = shallow(<RequiredInput value='' />);
-
+    // all invalid, all with "missing" error messages
     expect(wrapper.is('.invalid')).toBeTruthy();
     expect(wrapper.find('.error-missing').length).toEqual(1);
   });
-
+  // when the inputs are not empty
   it('should not have invalid state on non-empty input', () => {
     var wrapper = shallow(<RequiredInput value='a' />);
-
+    // none invalid
     expect(wrapper.is('.invalid')).toBeFalsy();
   });
-
+  // when name field changes
   it('should update name field on input change', () => {
     var handleChangeSpy = sinon.spy();
     var wrapper = shallow(<RequiredInput field='name' updateParent={handleChangeSpy} />);
     wrapper.find('input').simulate('change', { target: { value: "a" } });
-
+    // not invalid, no error message
     expect(handleChangeSpy.getCall(0).args[0]).toEqual({ name: { value: 'a', valid: true } });
     expect(handleChangeSpy.called).toBeTruthy();
     expect(wrapper.is('.invalid')).toBeFalsy();
     expect(wrapper.find('.error-missing').length).toEqual(0);
   });
-
+  // when password field changes
   it('should update password field on input change', () => {
     var handleChangeSpy = sinon.spy();
     var wrapper = shallow(<RequiredInput field='password' updateParent={handleChangeSpy} />);
     wrapper.find('input').simulate('change', { target: { value: "a" } });
-
+    // not invalid, no error message
     expect(handleChangeSpy.getCall(0).args[0]).toEqual({ password: { value: 'a', valid: true } });
     expect(handleChangeSpy.called).toBeTruthy();
     expect(wrapper.is('.invalid')).toBeFalsy();
