@@ -3,6 +3,16 @@ import SignUpForm from './TeamSignUp.js';
 import 'bootstrap/dist/css/bootstrap.css';
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state={submitted:false};
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleSubmit(submit) {
+    this.setState({submitted:submit});
+  }
 
   render() {
     return (
@@ -16,7 +26,10 @@ class App extends Component {
         </header>      
         <div className="row">
         <div className="col-xs-12">
-          <SignUpForm submitCallback={this.submit}/>
+          {this.state.submitted &&
+            <div className="alert alert-success" role="alert"><p>Thanks for signing up!</p></div>
+          }
+          <SignUpForm submitCallback={this.handleSubmit}/>
         </div>
         </div>
       </div>
