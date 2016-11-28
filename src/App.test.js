@@ -83,20 +83,21 @@ describe('behavior of email input', () =>{
     var wrapper = shallow(<EmailInput value="a@uw.edu"/>)
     expect(wrapper.is('.invalid')).toBeFalsy();
   });
-
+  // if the input is inalid, there will be an error message
   it('should show error message in the dom when input is not valid', () => {
     var validateSpy = sinon.spy(EmailInput.prototype, 'validate');
     var dummySpy = sinon.spy();
 
     var wrapper = shallow(<EmailInput value="aaa" updateParent={dummySpy}/>);
-
+    // it is invalid
     expect(wrapper.is('.invalid')).toBeTruthy();
     expect(wrapper.find('.error-invalid')).toBeTruthy();
-
+    // simulate a change to the email input
     wrapper.find('input').simulate('change', {target: {value: "bbb"}});
-
+    // still invalid
     expect(wrapper.is('.invalid')).toBeTruthy();
     expect(wrapper.find('.error-invalid')).toBeTruthy();
+    // actually updated
     expect(validateSpy.getCall(1).args[0]).toEqual('bbb');
     expect(dummySpy.getCall(0).args[0]).toEqual({'email': {value: 'bbb',valid: false}});
   });
@@ -177,7 +178,7 @@ describe('behavior of the form reset button', () => {
     expect(wrapper.find('PasswordConfirmationInput input').text()).toEqual('');
 
     // we should have 4 div's with className
-    // invalid (except the one for password confirmation) 
+    // invalid (except the one for password confirmation)
     // after we reset all the fields
     expect(wrapper.find('.invalid').reduce((sum, cur) => { return sum + 1 }, 0)).toEqual(4);
 

@@ -136,7 +136,7 @@ class EmailInput extends React.Component {
         {errors.missing &&
           <p className="help-block error-missing">we need to know your email address</p>
         }
-        {!errors.isValid &&
+        {!errors.isValid, !errors.missing &&
           <p className="help-block error-invalid">this is not a valid email address</p>
         }
       </div>
@@ -275,7 +275,7 @@ class PasswordConfirmationInput extends React.Component {
     }
   }
 
-  handleChange(event){  
+  handleChange(event){
     //check validity (to inform parent)
     var isValid = this.validate(event.target.value).isValid;
 
