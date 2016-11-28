@@ -43,14 +43,13 @@ class SignUpForm extends React.Component {
   //callback for the submit button
   handleSubmit(event) {
     event.preventDefault();
-    console.log('Submitted!');
-    this.props.submitCallback(this.state.email.valid && this.state.name.valid && this.state.dob.isValid && this.state.password.valid);
+    console.log('Submitted!', this.state.email.valid && this.state.name.valid && this.state.dob.valid && this.state.password.valid && this.state.passwordConf.valid);
+    this.props.submitCallback(this.state.email.valid && this.state.name.valid && this.state.dob.valid && this.state.password.valid && this.state.passwordConf.valid);
   }
 
   render() {
     //if all fields are valid, button should be enabled
-    var buttonEnabled = (this.state.email.valid && this.state.name.valid && this.state.dob.isValid && this.state.password.valid);
-
+    var buttonEnabled = (this.state.email.valid && this.state.name.valid && this.state.dob.valid && this.state.password.valid && this.state.passwordConf.valid);
     return (
       <div>
         <form name="signupForm" onSubmit={(e) => this.handleSubmit(e)}>

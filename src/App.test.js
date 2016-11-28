@@ -79,8 +79,7 @@ describe('functionality of <RequiredInput />', () => {
 });
 
 describe('behavior of email input', () =>{
-  it('should show error message when input is not valid', () => {
-    //var wrapper = shallow(<EmailInput value='aa'/>);
+  it('should not show error message when input is valid', () => {
     var wrapper = shallow(<EmailInput value="a@uw.edu"/>)
     expect(wrapper.is('.invalid')).toBeFalsy();
   });
@@ -317,15 +316,14 @@ describe('behavior of the form submit button', () => {
     var submitCallback = sinon.spy();
     var wrapper = mount(<SignUpForm submitCallback={submitCallback} />);
 
-    // two passwords do not match
+    // all inputs are valid
     wrapper.find('EmailInput input').simulate('change', { target: { value: "a@gmail.com" } });
     wrapper.find('#name input').simulate('change', { target: { value: "name" } });
-    wrapper.find('BirthdayInput input').simulate('change', { target: { value: "03/25/2008" } });
+    wrapper.find('BirthdayInput input').simulate('change', { target: { value: "03/25/1990" } });
     wrapper.find('#password input').simulate('change', { target: { value: "123456" } });
     wrapper.find('PasswordConfirmationInput input').simulate('change', { target: { value: "123456" } });
-    
-    expect(wrapper.find('#submitButton').prop('disabled')).toBeFalsy();
-    expect(submitCallback.getCall(0).args[0]).toBeTruthy();
+
+    expect(wrapper.find('#submitButton').prop('disabled')).toBeFalsy();    
   });
 
 });
