@@ -3,3 +3,15 @@ body {
   padding: 0;
   font-family: sans-serif;
 }
+
+.help-block {
+    color: red;
+}
+
+.invalid input {
+    background-color: #f2dede;
+}
+
+.subtitle {
+    font-size: 2rem;
+}

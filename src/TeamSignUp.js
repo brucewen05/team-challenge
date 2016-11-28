@@ -188,7 +188,7 @@ class RequiredInput extends React.Component {
                 value={this.props.value}
                 onChange={(e) => this.handleChange(e)}
         />
-        {errors &&
+        {!errors.isValid &&
           <p className="help-block error-missing">{this.props.errorMessage}</p>
         }
       </div>
@@ -216,7 +216,7 @@ class BirthdayInput extends React.Component {
     var d = new Date(); //today
     d.setYear(d.getFullYear() - 13); //subtract 13 from the year
     var minTimestamp = d.getTime();
-    if(timestamp < minTimestamp){
+    if(timestamp > minTimestamp){
       return {notOldEnough:true, isValid:false}
     }
 
@@ -270,14 +270,18 @@ class BirthdayInput extends React.Component {
  */
 class PasswordConfirmationInput extends React.Component {
   validate(currentValue){
-    if(currentValue === '' || this.props.password === ''){ //check both entries
-      return {mismatched:true, isValid:false};
+    if (this.props.password === '') {
+      return {isValid:true};
     }
 
-    return {isValid: true}; //no errors
+    if (currentValue === this.props.password) {
+      return {isValid:true};
+    } else {
+      return {mismatched:true, isValid:false}
+    }
   }
 
-  handleChange(event){
+  handleChange(event){  
     //check validity (to inform parent)
     var isValid = this.validate(event.target.value).isValid;
 
