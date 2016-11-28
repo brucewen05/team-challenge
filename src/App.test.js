@@ -101,10 +101,11 @@ describe('behavior of email input', () =>{
      expect(validateSpy.getCall(1).args[0]).toEqual('bbb');
      expect(dummySpy.getCall(0).args[0]).toEqual({'email': {value: 'bbb',valid: false}});
   });
-  it('should show error message when input is empty') {
-    var wrapper = shallow(<EmailInput value="a@uw.edu"/>)
-    expect(wrapper.is('.missing')).toBeFalsy();
-  }
+  it('should show error message when input is empty', () => {
+    var wrapper = shallow(<EmailInput value=""/>)
+    expect(wrapper.is('.invalid')).toBeTruthy();
+    expect(wrapper.find('.error-missing')).toBeTruthy();
+  });
 });
 
 describe('behavior of the form reset button', () => {
@@ -234,9 +235,9 @@ describe('behavior of the birthdate field', () => {
     var validateSpy = sinon.spy(BirthdayInput.prototype, 'validate');
     var handleChangeSpy = sinon.spy();
     var wrapper = shallow(<BirthdayInput updateParent={handleChangeSpy} />);
-    
+
     wrapper.find('input').simulate('change', { target: { value: "January 30, 1996" } });
-   
+
     //callback is called
     expect(handleChangeSpy.called).toBeTruthy();
     expect(handleChangeSpy.getCall(0).args[0]).toEqual({ dob: { value: 'January 30, 1996', valid: true } });
@@ -263,7 +264,7 @@ describe('behavior of the form submit button', () => {
     wrapper.find('BirthdayInput input').simulate('change', { target: { value: "03/25/1994" } });
     wrapper.find('#password input').simulate('change', { target: { value: "123456" } });
     wrapper.find('PasswordConfirmationInput input').simulate('change', { target: { value: "123456" } });
-    
+
     expect(wrapper.find('#submitButton').prop('disabled')).toBeTruthy();
   });
 
@@ -276,7 +277,7 @@ describe('behavior of the form submit button', () => {
     wrapper.find('BirthdayInput input').simulate('change', { target: { value: "03/25/1994" } });
     wrapper.find('#password input').simulate('change', { target: { value: "123456" } });
     wrapper.find('PasswordConfirmationInput input').simulate('change', { target: { value: "123456" } });
-    
+
     expect(wrapper.find('#submitButton').prop('disabled')).toBeTruthy();
   });
 
@@ -290,7 +291,7 @@ describe('behavior of the form submit button', () => {
     wrapper.find('BirthdayInput input').simulate('change', { target: { value: "03/25/2008" } });
     wrapper.find('#password input').simulate('change', { target: { value: "123456" } });
     wrapper.find('PasswordConfirmationInput input').simulate('change', { target: { value: "123456" } });
-    
+
     expect(wrapper.find('#submitButton').prop('disabled')).toBeTruthy();
   });
 
@@ -303,7 +304,7 @@ describe('behavior of the form submit button', () => {
     wrapper.find('#name input').simulate('change', { target: { value: "name" } });
     wrapper.find('BirthdayInput input').simulate('change', { target: { value: "03/25/2008" } });
     wrapper.find('PasswordConfirmationInput input').simulate('change', { target: { value: "123456" } });
-    
+
     expect(wrapper.find('#submitButton').prop('disabled')).toBeTruthy();
   });
 
@@ -317,7 +318,7 @@ describe('behavior of the form submit button', () => {
     wrapper.find('BirthdayInput input').simulate('change', { target: { value: "03/25/2008" } });
     wrapper.find('#password input').simulate('change', { target: { value: "123" } });
     wrapper.find('PasswordConfirmationInput input').simulate('change', { target: { value: "123456" } });
-    
+
     expect(wrapper.find('#submitButton').prop('disabled')).toBeTruthy();
   });
 
@@ -332,7 +333,7 @@ describe('behavior of the form submit button', () => {
     wrapper.find('#password input').simulate('change', { target: { value: "123456" } });
     wrapper.find('PasswordConfirmationInput input').simulate('change', { target: { value: "123456" } });
 
-    expect(wrapper.find('#submitButton').prop('disabled')).toBeFalsy();    
+    expect(wrapper.find('#submitButton').prop('disabled')).toBeFalsy();
   });
 
 });
