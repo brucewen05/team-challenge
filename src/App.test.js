@@ -214,13 +214,17 @@ describe('behavior of the birthdate field', () => {
   });
 
   it('should execute updateParent callback on input change', () => {
+    var validateSpy = sinon.spy(BirthdayInput.prototype, 'validate');
     var handleChangeSpy = sinon.spy();
     var wrapper = shallow(<BirthdayInput updateParent={handleChangeSpy} />);
+    
     wrapper.find('input').simulate('change', { target: { value: "January 30, 1996" } });
+   
     //callback is called
     expect(handleChangeSpy.called).toBeTruthy();
     expect(handleChangeSpy.getCall(0).args[0]).toEqual({ dob: { value: 'January 30, 1996', valid: true } });
-  });
+    expect(validateSpy.getCall(1).args[0]).toEqual('January 30, 1996');
+});
 
 });
 
