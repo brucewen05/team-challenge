@@ -136,7 +136,6 @@ class EmailInput extends React.Component {
         {errors.missing &&
           <p className="help-block error-missing">we need to know your email address</p>
         }
-        // so the invalid error message only shows up when there is some input
         {!errors.missing && !errors.isValid &&
           <p className="help-block error-invalid">this is not a valid email address</p>
         }
