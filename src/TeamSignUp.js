@@ -12,8 +12,7 @@ class SignUpForm extends React.Component {
       name:{value:'',valid:false},
       dob:{value:'',valid:false},
       password:{value:'',valid:false},
-      passwordConf:{value:'',valid:false},
-      submitted:false
+      passwordConf:{value:'',valid:false}
     };
 
     this.updateState = this.updateState.bind(this); //bind for scope
@@ -34,19 +33,18 @@ class SignUpForm extends React.Component {
       name:{value:'',valid:false},
       dob:{value:'',valid:false},
       password:{value:'',valid:false},
-      passwordConf:{value:'',valid:false},
-      submitted:false
+      passwordConf:{value:'',valid:false}
     };
 
     this.setState(defaultState);
+    this.props.submitCallback(false);
   }
 
   //callback for the submit button
   handleSubmit(event) {
     event.preventDefault();
     console.log('Submitted!');
-    //this.props.submitCallback(this.state);
-    this.setState({submitted:true});
+    this.props.submitCallback(this.state.email.valid && this.state.name.valid && this.state.dob.isValid && this.state.password.valid);
   }
 
   render() {
@@ -55,9 +53,6 @@ class SignUpForm extends React.Component {
 
     return (
       <div>
-        {this.state.submitted &&
-          <div className="alert alert-success" role="alert"><p>Thanks for signing up!</p></div>
-        }
         <form name="signupForm" onSubmit={(e) => this.handleSubmit(e)}>
 
           <EmailInput value={this.state.email.value} updateParent={this.updateState} />
@@ -83,7 +78,7 @@ class SignUpForm extends React.Component {
           {/* Submit Buttons */}
           <div className="form-group">
             <button id="resetButton" type="reset" className="btn btn-default" onClick={(e)=>this.handleReset(e)}>Reset</button> {' ' /*space*/}
-            <button id="submitButton" type="submit" className="btn btn-primary" disabled={buttonEnabled} onClick={this.handleSubmit}>Sign Me Up!</button>
+            <button id="submitButton" type="submit" className="btn btn-primary" disabled={!buttonEnabled} onClick={this.handleSubmit}>Sign Me Up!</button>
           </div>
 
         </form>
