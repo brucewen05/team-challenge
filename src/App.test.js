@@ -101,8 +101,10 @@ describe('behavior of email input', () =>{
      expect(validateSpy.getCall(1).args[0]).toEqual('bbb');
      expect(dummySpy.getCall(0).args[0]).toEqual({'email': {value: 'bbb',valid: false}});
   });
+  // if the input is empty
   it('should show error message when input is empty', () => {
     var wrapper = shallow(<EmailInput value=""/>)
+    // expect the input to be invalid, showing "missing" error message
     expect(wrapper.is('.invalid')).toBeTruthy();
     expect(wrapper.find('.error-missing')).toBeTruthy();
   });
